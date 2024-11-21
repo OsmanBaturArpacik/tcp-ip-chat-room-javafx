@@ -16,13 +16,15 @@ public class Client implements Runnable {
     private PrintWriter out;
     private boolean done;
 
-    private Thread incomingMessageThread;
     private static Client instance;
     public static Client getInstance() {
         if (instance == null) {
             instance = new Client();
         }
         return instance;
+    }
+    public Socket getClient() {
+        return client;
     }
 
     public Client() {
@@ -32,22 +34,17 @@ public class Client implements Runnable {
     @Override
     public void run() {
         try {
-            client = new Socket("127.0.0.1", 8888);
+            client = new Socket("127.0.0.1", 8989);
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
             sendMessageToUI(GetData.nickname);
 
-            String inMessage;
-            while ((inMessage = in.readLine()) != null) {
-                System.out.println(inMessage);
-                // client'a yazdir
-//                ChatController.getInstance().appendMessage(inMessage);
-                final String message = inMessage; // Mesajı final yaparak Platform.runLater()'a gönderiyoruz
-                Platform.runLater(() -> {
-                    App.getMessageService().handleIncomingMessage(message);
-                });
+            if (App.getInMessageService() != null) {
+                App.getInMessageService().setIn(in);
+                new Thread(App.getInMessageService()).start();
             }
+
         } catch (IOException e) {
             shutdown();
         }

@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,11 +42,15 @@ public class ChatController implements Initializable {
     @FXML
     private Button sentBtn;
 
+//    private final StringProperty chatContent = new SimpleStringProperty("");
+
+
     @FXML
     void quitChat() throws IOException {
         System.out.println("/quit");
         App.setRoot("login");
         // exit from form to do back
+        // /nick
     }
 
     @FXML
@@ -55,8 +61,7 @@ public class ChatController implements Initializable {
             showError("Please write a message.");
             return;
         }
-
-        App.getMessageService().sendMessage(messageText);
+        App.getClient().sendMessageToUI(messageText);
         appendMessage(GetData.nickname + "(me): " + messageText);
         message.clear();
     }
@@ -69,9 +74,8 @@ public class ChatController implements Initializable {
     }
 
     public void appendMessage(String newMessage) {
-        if (chatHistory != null) {
-            chatHistory.appendText(newMessage + "\n");
-        }
+        System.out.println("Yeni mesaj ekleniyor: " + newMessage);
+        chatHistory.appendText(newMessage + "\n");
     }
 
     public void displayUsername() {
@@ -90,6 +94,7 @@ public class ChatController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayUsername();
+//        chatHistory.textProperty().bind(chatContent);
     }
 
 }

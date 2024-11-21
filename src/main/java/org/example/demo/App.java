@@ -18,20 +18,34 @@ public class App extends Application{
     private static double x = 0;
     private static double y = 0;
     private static InMessageService inMessageService;
-    private static OutMessageService outMessageService;
-    private static MessageService messageService;
     private static ChatController chatController;
+    private static LoginController loginController;
+    private static Client client;
 
+    public static Client getClient() {
+        return client;
+    }
     public static ChatController getChatController() {
         return chatController;
     }
-
-    public static MessageService getMessageService() {
-        return messageService;
+    public static LoginController getLoginController() {
+        return loginController;
+    }
+    public static InMessageService getInMessageService() {
+        return inMessageService;
     }
 
     @Override
     public void start(Stage stage) throws IOException {
+        // FXML dosyalarını yükle
+        FXMLLoader loginLoader = new FXMLLoader(App.class.getResource("login.fxml"));
+        Parent loginRoot = loginLoader.load();
+        loginController = loginLoader.getController();
+
+        FXMLLoader chatLoader = new FXMLLoader(App.class.getResource("chat.fxml"));
+        Parent chatRoot = chatLoader.load();
+        chatController = chatLoader.getController();
+
         App.stage = stage;
         App.scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
@@ -39,24 +53,10 @@ public class App extends Application{
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.show();
 
-        messageService = new MessageService(Client.getInstance());
-
-        // OutMessageService'i başlatıyoruz
-        outMessageService = new OutMessageService();
-        // InMessageService için bir thread başlatıyoruz
         inMessageService = new InMessageService();
-        Thread inThread = new Thread(inMessageService);
-        inThread.start();
-
+        client = Client.getInstance();
+        new Thread(client).start();
     }
-
-    // GUI'den gelen mesajları OutMessageService ile sunucuya gönderiyoruz
-    public static void sendMessageToServer(String message) {
-        if (outMessageService != null) {
-            outMessageService.sendMessage(message);
-        }
-    }
-
 
     public static void setRoot(String fxml) throws IOException {
         App.scene.setRoot(loadFXML(fxml));
