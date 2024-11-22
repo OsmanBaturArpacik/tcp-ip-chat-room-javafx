@@ -17,13 +17,13 @@ public class LoginController implements Initializable {
 
 
     @FXML
-    private Button close;
+    private Button closeBtn;
 
     @FXML
     private Button loginBtn;
 
     @FXML
-    private AnchorPane main_form;
+    private AnchorPane mainForm;
 
     @FXML
     private TextField nickname;
@@ -40,12 +40,8 @@ public class LoginController implements Initializable {
             alert.showAndWait();
         }
         else {
-            GetData.nickname = nickname.getText();
-            System.out.println(GetData.nickname);
-
-            // nickname run() icinde ataniyor
-            new Thread(Client.getInstance()).start();
-
+            String nick = nickname.getText();
+            App.getClient().setNickname(nick);
             App.setRoot("chat");
         }
     }
@@ -56,7 +52,6 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        main_form.setFocusTraversable(true);
-
+        mainForm.setFocusTraversable(true);
     }
 }

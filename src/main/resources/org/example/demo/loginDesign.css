@@ -21,13 +21,13 @@
 
 .textfield {
     -fx-background-color:linear-gradient(to bottom right, #efefef, #eee);
-    -fx-background-radius:4px;
     -fx-border-color:#000;
     -fx-border-width:.4px;
-    -fx-border-radius:.24px;
-    -fx-font-size:13px;
+    -fx-border-radius:40px;
+    -fx-background-radius: 40px;
+    -fx-font-size:32px;
     -fx-font-family:"Arial";
-    
+
 }
 
 .textfield:focused {
@@ -38,9 +38,12 @@
 
 .login-btn {
     -fx-background-color:linear-gradient(to bottom, #278f96, #2d645f);
-    -fx-background-radius:5px;
+    -fx-background-radius:40px;
+    -fx-border-color:#000;
+    -fx-border-width:.4px;
+    -fx-border-radius:40px;
     -fx-text-fill:#fff;
-    -fx-font-size:18px;
+    -fx-font-size:24px;
     -fx-font-family:"Arial";
     -fx-cursor:hand;
 }

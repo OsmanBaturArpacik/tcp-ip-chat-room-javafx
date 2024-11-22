@@ -1,19 +1,17 @@
-package org.example.demo;
+package org.example.demo.minegood;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javafx.scene.input.MouseEvent;
-import javafx.stage.StageStyle;
-import org.example.demo.client.*;
 
 public class App extends Application implements Initializable {
     private static Scene scene;
@@ -22,7 +20,6 @@ public class App extends Application implements Initializable {
     private static double y = 0;
 
     private static ChatController chatController;
-    private static LoginController loginController;
     private static Client client;
 
     public static Client getClient() {
@@ -33,9 +30,12 @@ public class App extends Application implements Initializable {
         App.chatController = chatController;
     }
 
+    public static ChatController getChatController() {
+        return chatController;
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
-        uploadFXML("login");
         App.stage = stage;
         App.scene = new Scene(loadFXML("chat"));
         stage.setScene(scene);
@@ -44,17 +44,7 @@ public class App extends Application implements Initializable {
         stage.show();
 
         client = new Client(chatController);
-        new Thread(App.getClient()).start();
-    }
-    private  void uploadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml+".fxml"));
-        loginController = fxmlLoader.getController();
-    }
-    public static void setRoot(String fxml) throws IOException {
-        App.scene.setRoot(loadFXML(fxml));
-        App.scene.getWindow().sizeToScene();
-        App.scene.getWindow().centerOnScreen();
-        setRootAsDraggable();
+        new Thread(client).start();
     }
 
     private static Parent loadFXML(String fxml) throws IOException {

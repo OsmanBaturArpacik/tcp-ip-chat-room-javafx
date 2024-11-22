@@ -1,8 +1,4 @@
-package org.example.demo.client;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+package org.example.demo.minegood;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,7 +6,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.example.demo.App;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static org.example.demo.client.Client.sendMessage;
 
@@ -43,7 +42,7 @@ public class ChatController implements Initializable {
     @FXML
     void quitChat() throws IOException {
         System.out.println("/quit");
-        App.setRoot("login");
+        System.exit(1);
         // exit from form to do back
         // /nick
     }

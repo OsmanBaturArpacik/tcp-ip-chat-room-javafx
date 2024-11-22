@@ -1,7 +1,6 @@
-package org.example.demo.client;
+package org.example.demo.minegood;
 
 import javafx.application.Platform;
-import org.example.demo.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +17,7 @@ public class Client implements Runnable {
     private static BufferedReader in;
     private static PrintWriter out;
     private boolean done;
-    private String nickname = "";
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
+    private String nickname;
 
     public String getNickname() {
         return nickname;
@@ -40,18 +35,10 @@ public class Client implements Runnable {
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            sendMessage(nickname);
+//            sendMessage(nickname);
 
             String inMessage;
             while ((inMessage = in.readLine()) != null) {
-                System.out.println("AAAAAAAAAAAAAAC");
-
-                if (inMessage.compareTo("Please enter a nickname: ") == 0) {
-                    System.out.println("AAAAAAAAAAAAAACnick");
-                    System.out.println(nickname);
-                    sendMessage(nickname);
-                }
-
                 System.out.println("Gelen mesaj: " + inMessage);
 
                 final String str = inMessage + "\n";

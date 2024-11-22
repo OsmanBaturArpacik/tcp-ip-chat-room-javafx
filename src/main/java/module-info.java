@@ -9,4 +9,6 @@ module org.example.demo {
 
     exports org.example.demo.client;
     opens org.example.demo.client to javafx.fxml;
+    exports org.example.demo.workingarea;
+    opens org.example.demo.workingarea to javafx.fxml;
 }
