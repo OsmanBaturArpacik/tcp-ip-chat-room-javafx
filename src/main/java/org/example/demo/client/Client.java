@@ -1,7 +1,6 @@
 package org.example.demo.client;
 
 import javafx.application.Platform;
-import org.example.demo.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,17 +11,13 @@ import java.net.Socket;
 public class Client implements Runnable {
 
     private Socket client;
-    private final ChatController chatController;
+    private ChatController chatController;
 //    private static final String HOSTNAME = “localhost”;
 //    private static final int PORT = 1234;
     private static BufferedReader in;
     private static PrintWriter out;
     private boolean done;
-    private static String nickname = "";
-
-    public void setNickname(String nickname) {
-        Client.nickname = nickname;
-    }
+    private String nickname;
 
     public String getNickname() {
         return nickname;
@@ -40,15 +35,18 @@ public class Client implements Runnable {
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
+//            sendMessage(nickname);
+
             String inMessage;
             while ((inMessage = in.readLine()) != null) {
-                if (inMessage.matches("(?i)^Please enter a nickname:\\s*$") && nickname != null) {
-                    System.out.println("Nickname isteniyor, gönderiliyor...");
-                    System.out.println(nickname);
-                    sendMessage(nickname);
-                } else {
-                    chatController.appendMessage(inMessage);
-                }
+                System.out.println("Gelen mesaj: " + inMessage);
+
+                final String str = inMessage + "\n";
+                Platform.runLater(() -> {
+                    if (chatController != null) {
+                        chatController.appendMessage(str);
+                    }
+                });
             }
 
         } catch (IOException e) {
@@ -69,18 +67,9 @@ public class Client implements Runnable {
         }
     }
 
-    public void sendMessage(String message) {
+    public static void sendMessage(String message) {
         if (out != null && !message.isEmpty()) {
-            if (message.equals("/quit")) {
-                try {
-                    out.println("/quit");
-                    client.close();
-                    shutdown();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-             out.println(message);
+            out.println(message);
         }
     }
 

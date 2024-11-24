@@ -5,15 +5,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.example.demo.client.ChatController;
+import org.example.demo.client.Client;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javafx.scene.input.MouseEvent;
-import javafx.stage.StageStyle;
-import org.example.demo.client.*;
 
 public class App extends Application implements Initializable {
     private static Scene scene;
@@ -21,15 +21,19 @@ public class App extends Application implements Initializable {
     private static double x = 0;
     private static double y = 0;
 
-
     private static ChatController chatController;
     private static Client client;
 
     public static Client getClient() {
         return client;
     }
+
     public static void setChatController(ChatController chatController) {
         App.chatController = chatController;
+    }
+
+    public static ChatController getChatController() {
+        return chatController;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class App extends Application implements Initializable {
         stage.show();
 
         client = new Client(chatController);
-//        new Thread(App.getClient()).start();
+        new Thread(client).start();
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
@@ -50,6 +54,7 @@ public class App extends Application implements Initializable {
         chatController = fxmlLoader.getController();
         return fxmlLoader.load();
     }
+
     public static void setRootAsDraggable() {
        Parent root = App.stage.getScene().getRoot();
        root.setOnMousePressed((MouseEvent event) -> {
@@ -57,20 +62,24 @@ public class App extends Application implements Initializable {
        y = event.getY();
        root.requestFocus();
        });
+
        root.setOnMouseDragged((MouseEvent event) -> {
        App.stage.setX(event.getScreenX() - x);
        App.stage.setY(event.getScreenY() - y);
        App.stage.setOpacity(.8);
        });
+
        root.setOnMouseReleased((MouseEvent event) -> {
        App.stage.setOpacity(1);
        });
    }
+
     public static void main(String[] args) {
         launch();
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
 
+    }
 }

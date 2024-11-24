@@ -1,15 +1,17 @@
 package org.example.demo.client;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.example.demo.App;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 
 public class ChatController implements Initializable {
 
@@ -17,31 +19,16 @@ public class ChatController implements Initializable {
     private TextArea chatHistory;
 
     @FXML
-    private StackPane chatPane;
-
-    @FXML
     private Button closeBtn;
 
     @FXML
-    private Button closeBtn1;
-
-    @FXML
-    private Button loginBtn;
-
-    @FXML
-    private StackPane loginPane;
-
-    @FXML
-    private StackPane mainPane;
+    private AnchorPane mainForm;
 
     @FXML
     private TextField message;
 
     @FXML
     private Button minimizeBtn;
-
-    @FXML
-    private TextField nickname;
 
     @FXML
     private Label nicknameLabel;
@@ -52,38 +39,17 @@ public class ChatController implements Initializable {
     @FXML
     private Button sentBtn;
 
-
     @FXML
-    void enterChat() {
-        Alert alert;
-
-        if (nickname.getText().isEmpty()){
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error Message");
-            alert.setHeaderText(null);
-            alert.setContentText("Please fill all necessary fields.");
-            alert.showAndWait();
-        }
-        else {
-            String nick = nickname.getText();
-            App.getClient().setNickname(nick);
-            new Thread(App.getClient()).start();
-            loginPane.setVisible(false);
-            displayNickname();
-        }
-    }
-
-
-    @FXML
-    void quitChat() {
+    void quitChat() throws IOException {
         System.out.println("/quit");
-        App.getClient().sendMessage("/quit");
-        loginPane.setVisible(true);
-        App.getClient().setNickname(null);
+        System.exit(1);
+        // exit from form to do back
+        // /nick
     }
 
     @FXML
-    void sendChatMessage() {
+    void sentMessage() {
+
         String messageText = message.getText().trim();
         if (messageText.isEmpty()) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -92,29 +58,18 @@ public class ChatController implements Initializable {
             alert.showAndWait();
             return;
         }
-        else if (messageText.startsWith("/nick ")) {
-            App.getClient().sendMessage(messageText);
-            String[] messageSplit = messageText.split(" ", 2);
-            App.getClient().setNickname(messageSplit[1]);
-            displayNickname();
-        }
-        else if (messageText.startsWith("/clear")) {
-            chatHistory.clear();
-        }
-        else if (messageText.startsWith("/quit")) {
-            App.getClient().sendMessage("/quit");
-        }
-        else {
-            App.getClient().sendMessage(messageText);
-        }
+
+        App.getClient().sendMessage(messageText);
+//        appendMessage(GetData.nickname + "(me): " + messageText);
         message.clear();
     }
 
     public void appendMessage(String newMessage) {
+        System.out.println("Yeni mesaj ekleniyor: " + newMessage);
         chatHistory.appendText(newMessage + "\n");
     }
 
-    public void displayNickname() {
+    public void displayUsername() {
         if (App.getClient() != null) {
             nicknameLabel.setText(App.getClient().getNickname());
         }
@@ -123,15 +78,14 @@ public class ChatController implements Initializable {
         System.exit(0);
     }
     public void minimize() {
-        Stage stage = (Stage) mainPane.getScene().getWindow();
+        Stage stage = (Stage) mainForm.getScene().getWindow();
         stage.setIconified(true);
     }
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loginPane.setVisible(true);
         App.setChatController(this);
-        displayNickname();
+        displayUsername();
     }
 
 }
