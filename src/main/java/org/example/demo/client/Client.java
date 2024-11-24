@@ -1,8 +1,5 @@
 package org.example.demo.client;
 
-import javafx.application.Platform;
-import org.example.demo.App;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,24 +9,11 @@ import java.net.Socket;
 public class Client implements Runnable {
 
     private Socket client;
-    private final ChatController chatController;
-//    private static final String HOSTNAME = “localhost”;
-//    private static final int PORT = 1234;
-    private static BufferedReader in;
-    private static PrintWriter out;
+    private BufferedReader in;
+    private PrintWriter out;
     private boolean done;
-    private static String nickname = "";
 
-    public void setNickname(String nickname) {
-        Client.nickname = nickname;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public Client(ChatController chatController) {
-        this.chatController = chatController;
+    public Client() {
         done = false;
     }
 
@@ -40,17 +24,14 @@ public class Client implements Runnable {
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
+            InputHandler inHandler = new InputHandler();
+            Thread t = new Thread(inHandler);
+            t.start();
+
             String inMessage;
             while ((inMessage = in.readLine()) != null) {
-                if (inMessage.matches("(?i)^Please enter a nickname:\\s*$") && nickname != null) {
-                    System.out.println("Nickname isteniyor, gönderiliyor...");
-                    System.out.println(nickname);
-                    sendMessage(nickname);
-                } else {
-                    chatController.appendMessage(inMessage);
-                }
+                System.out.println(inMessage);
             }
-
         } catch (IOException e) {
             shutdown();
         }
@@ -65,24 +46,35 @@ public class Client implements Runnable {
                 client.close();
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+
         }
     }
 
-    public void sendMessage(String message) {
-        if (out != null && !message.isEmpty()) {
-            if (message.equals("/quit")) {
-                try {
-                    out.println("/quit");
-                    client.close();
-                    shutdown();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+    class InputHandler implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
+                while (!done) {
+                    String message = inReader.readLine();
+                    if (message.equals("/quit")) {
+                        out.println(message);
+                        inReader.close();
+                        shutdown();
+                    } else {
+                        out.println(message);
+                    }
                 }
+            } catch (IOException e) {
+                shutdown();
             }
-             out.println(message);
         }
     }
 
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.run();
+    }
 }
 
