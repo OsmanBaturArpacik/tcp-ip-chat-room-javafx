@@ -16,64 +16,52 @@ public class SimpleApp extends Application {
     private static TextArea textArea = new TextArea();
     private static TextField textField = new TextField();
     private static Button button = new Button("Ekle");
-    private static Arayuz arayuz;  // Arayuz sınıfını burada tanımlıyoruz.
+    private static Arayuz arayuz;
 
-    // TextArea'ya metin eklemek için fonksiyon
     public static void appendText(String text) {
         textArea.appendText(text + "\n");
     }
 
     @Override
     public void start(Stage primaryStage) {
-        // TextArea: Ortada yer alacak
-        textArea.setEditable(false);  // Kullanıcı metin giremesin
-        textArea.setWrapText(true);   // Satır sonu
-        textArea.setPadding(new Insets(10)); // İç padding ekledik
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPadding(new Insets(10));
 
-        // TextField: Kullanıcıdan girdi alacak
-        textField.setPadding(new Insets(10)); // İç padding ekledik
+        textField.setPadding(new Insets(10));
 
-        // Button: TextField'dan metin eklemek için
-        button.setPadding(new Insets(10)); // İç padding ekledik
+        button.setPadding(new Insets(10));
 
-        // Button'a tıklandığında, TextField'dan alınan metni TextArea'ya ekler
         button.setOnAction(e -> {
             String inputText = textField.getText();
             if (!inputText.isEmpty()) {
-                // Mesaj gönder
                 arayuz.sendMessage(inputText);
-                textField.clear(); // TextField'ı temizler
+                textField.clear();
             }
         });
 
-        // Enter tuşu ile de tetikleme
         textField.setOnAction(e -> {
             String inputText = textField.getText();
             if (!inputText.isEmpty()) {
-                // Mesaj gönder
                 arayuz.sendMessage(inputText);
-                textField.clear(); // TextField'ı temizler
+                textField.clear();
             }
         });
 
-        // TextField ve Button'ı bir HBox içinde yan yana yerleştiriyoruz
         HBox inputBox = new HBox(10, textField, button);
         inputBox.setAlignment(Pos.CENTER);
 
-        // En dıştaki VBox'a padding ekliyoruz
         VBox vbox = new VBox(10, textArea, inputBox);
-        vbox.setAlignment(Pos.CENTER);  // Öğeler ortalanacak
-        vbox.setPadding(new Insets(20));  // En dışta padding
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(20));
 
-        // Scene ve Stage
         Scene scene = new Scene(vbox, 400, 300);
         primaryStage.setTitle("Simple JavaFX App");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Arayuz'u başlat
-        arayuz = new Arayuz();  // Arayuz sınıfını başlatıyoruz
-        new Thread(arayuz).start();  // Arayuz thread'ini başlatıyoruz
+        arayuz = new Arayuz();
+        new Thread(arayuz).start();
     }
 
     public static void main(String[] args) {

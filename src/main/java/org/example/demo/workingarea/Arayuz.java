@@ -20,16 +20,15 @@ public class Arayuz implements Runnable {
     @Override
     public void run() {
         try {
-            client = new Socket("127.0.0.1", 8989); // Bağlantı adresi ve port
+            client = new Socket("127.0.0.1", 8989);
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             System.out.println("Bağlantı sağlandı!");
 
             String inMessage;
             while ((inMessage = in.readLine()) != null) {
-                // Soketten gelen mesajı al ve GUI'ye yaz
                 System.out.println("Gelen mesaj: " + inMessage);
-                SimpleApp.appendText(inMessage);  // Gelen mesajı GUI'ye ekle
+                SimpleApp.appendText(inMessage);
             }
 
         } catch (IOException e) {
@@ -52,7 +51,7 @@ public class Arayuz implements Runnable {
 
     public static void sendMessage(String message) {
         if (out != null && !message.isEmpty()) {
-            out.println(message);  // Mesajı soket üzerinden gönder
+            out.println(message);
         }
     }
 }
