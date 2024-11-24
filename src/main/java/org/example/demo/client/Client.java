@@ -69,9 +69,18 @@ public class Client implements Runnable {
         }
     }
 
-    public static void sendMessage(String message) {
+    public void sendMessage(String message) {
         if (out != null && !message.isEmpty()) {
-            out.println(message);
+            if (message.equals("/quit")) {
+                try {
+                    out.println("/quit");
+                    client.close();
+                    shutdown();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+             out.println(message);
         }
     }
 

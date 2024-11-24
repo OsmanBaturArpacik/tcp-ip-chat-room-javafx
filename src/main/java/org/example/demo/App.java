@@ -21,13 +21,13 @@ public class App extends Application implements Initializable {
     private static double x = 0;
     private static double y = 0;
 
+
     private static ChatController chatController;
     private static Client client;
 
     public static Client getClient() {
         return client;
     }
-
     public static void setChatController(ChatController chatController) {
         App.chatController = chatController;
     }
@@ -44,12 +44,12 @@ public class App extends Application implements Initializable {
         client = new Client(chatController);
 //        new Thread(App.getClient()).start();
     }
+
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml+".fxml"));
         chatController = fxmlLoader.getController();
         return fxmlLoader.load();
     }
-
     public static void setRootAsDraggable() {
        Parent root = App.stage.getScene().getRoot();
        root.setOnMousePressed((MouseEvent event) -> {
@@ -57,24 +57,20 @@ public class App extends Application implements Initializable {
        y = event.getY();
        root.requestFocus();
        });
-
        root.setOnMouseDragged((MouseEvent event) -> {
        App.stage.setX(event.getScreenX() - x);
        App.stage.setY(event.getScreenY() - y);
        App.stage.setOpacity(.8);
        });
-
        root.setOnMouseReleased((MouseEvent event) -> {
        App.stage.setOpacity(1);
        });
    }
-
     public static void main(String[] args) {
         launch();
     }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
     }
+
 }

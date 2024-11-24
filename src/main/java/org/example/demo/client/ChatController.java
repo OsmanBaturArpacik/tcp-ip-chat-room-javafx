@@ -1,6 +1,5 @@
 package org.example.demo.client;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -8,12 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.example.demo.App;
-
-import static org.example.demo.client.Client.sendMessage;
 
 public class ChatController implements Initializable {
 
@@ -58,7 +54,7 @@ public class ChatController implements Initializable {
 
 
     @FXML
-    void enterChat() throws IOException {
+    void enterChat() {
         Alert alert;
 
         if (nickname.getText().isEmpty()){
@@ -73,22 +69,21 @@ public class ChatController implements Initializable {
             App.getClient().setNickname(nick);
             new Thread(App.getClient()).start();
             loginPane.setVisible(false);
-            displayUsername();
+            displayNickname();
         }
     }
 
 
     @FXML
-    void quitChat() throws IOException {
+    void quitChat() {
         System.out.println("/quit");
+        App.getClient().sendMessage("/quit");
         loginPane.setVisible(true);
-        // exit from form to do back
-        // /nick /help /clear
+        App.getClient().setNickname(null);
     }
 
     @FXML
-    void sentMessage() {
-
+    void sendChatMessage() {
         String messageText = message.getText().trim();
         if (messageText.isEmpty()) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -97,9 +92,21 @@ public class ChatController implements Initializable {
             alert.showAndWait();
             return;
         }
-
-        sendMessage(messageText);
-//        appendMessage(GetData.nickname + "(me): " + messageText);
+        else if (messageText.startsWith("/nick ")) {
+            App.getClient().sendMessage(messageText);
+            String[] messageSplit = messageText.split(" ", 2);
+            App.getClient().setNickname(messageSplit[1]);
+            displayNickname();
+        }
+        else if (messageText.startsWith("/clear")) {
+            chatHistory.clear();
+        }
+        else if (messageText.startsWith("/quit")) {
+            App.getClient().sendMessage("/quit");
+        }
+        else {
+            App.getClient().sendMessage(messageText);
+        }
         message.clear();
     }
 
@@ -107,7 +114,7 @@ public class ChatController implements Initializable {
         chatHistory.appendText(newMessage + "\n");
     }
 
-    public void displayUsername() {
+    public void displayNickname() {
         if (App.getClient() != null) {
             nicknameLabel.setText(App.getClient().getNickname());
         }
@@ -122,8 +129,9 @@ public class ChatController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        loginPane.setVisible(true);
         App.setChatController(this);
-        displayUsername();
+        displayNickname();
     }
 
 }

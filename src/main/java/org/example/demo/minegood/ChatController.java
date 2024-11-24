@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static org.example.demo.client.Client.sendMessage;
 
 public class ChatController implements Initializable {
 
@@ -59,7 +58,7 @@ public class ChatController implements Initializable {
             return;
         }
 
-        sendMessage(messageText);
+        App.getClient().sendMessage(messageText);
 //        appendMessage(GetData.nickname + "(me): " + messageText);
         message.clear();
     }
