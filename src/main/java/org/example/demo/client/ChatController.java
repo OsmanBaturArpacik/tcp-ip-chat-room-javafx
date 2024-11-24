@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.example.demo.App;
 
@@ -20,16 +21,31 @@ public class ChatController implements Initializable {
     private TextArea chatHistory;
 
     @FXML
+    private StackPane chatPane;
+
+    @FXML
     private Button closeBtn;
 
     @FXML
-    private AnchorPane mainForm;
+    private Button closeBtn1;
+
+    @FXML
+    private Button loginBtn;
+
+    @FXML
+    private StackPane loginPane;
+
+    @FXML
+    private StackPane mainPane;
 
     @FXML
     private TextField message;
 
     @FXML
     private Button minimizeBtn;
+
+    @FXML
+    private TextField nickname;
 
     @FXML
     private Label nicknameLabel;
@@ -40,12 +56,34 @@ public class ChatController implements Initializable {
     @FXML
     private Button sentBtn;
 
+
+    @FXML
+    void enterChat() throws IOException {
+        Alert alert;
+
+        if (nickname.getText().isEmpty()){
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all necessary fields.");
+            alert.showAndWait();
+        }
+        else {
+            String nick = nickname.getText();
+            App.getClient().setNickname(nick);
+            new Thread(App.getClient()).start();
+            loginPane.setVisible(false);
+            displayUsername();
+        }
+    }
+
+
     @FXML
     void quitChat() throws IOException {
         System.out.println("/quit");
-        App.setRoot("login");
+        loginPane.setVisible(true);
         // exit from form to do back
-        // /nick
+        // /nick /help /clear
     }
 
     @FXML
@@ -66,7 +104,6 @@ public class ChatController implements Initializable {
     }
 
     public void appendMessage(String newMessage) {
-        System.out.println("Yeni mesaj ekleniyor: " + newMessage);
         chatHistory.appendText(newMessage + "\n");
     }
 
@@ -79,10 +116,10 @@ public class ChatController implements Initializable {
         System.exit(0);
     }
     public void minimize() {
-        Stage stage = (Stage) mainForm.getScene().getWindow();
+        Stage stage = (Stage) mainPane.getScene().getWindow();
         stage.setIconified(true);
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         App.setChatController(this);

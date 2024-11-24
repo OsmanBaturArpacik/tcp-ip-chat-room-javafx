@@ -12,16 +12,16 @@ import java.net.Socket;
 public class Client implements Runnable {
 
     private Socket client;
-    private ChatController chatController;
+    private final ChatController chatController;
 //    private static final String HOSTNAME = “localhost”;
 //    private static final int PORT = 1234;
     private static BufferedReader in;
     private static PrintWriter out;
     private boolean done;
-    private String nickname = "";
+    private static String nickname = "";
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        Client.nickname = nickname;
     }
 
     public String getNickname() {
@@ -40,26 +40,15 @@ public class Client implements Runnable {
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            sendMessage(nickname);
-
             String inMessage;
             while ((inMessage = in.readLine()) != null) {
-                System.out.println("AAAAAAAAAAAAAAC");
-
-                if (inMessage.compareTo("Please enter a nickname: ") == 0) {
-                    System.out.println("AAAAAAAAAAAAAACnick");
+                if (inMessage.matches("(?i)^Please enter a nickname:\\s*$") && nickname != null) {
+                    System.out.println("Nickname isteniyor, gönderiliyor...");
                     System.out.println(nickname);
                     sendMessage(nickname);
+                } else {
+                    chatController.appendMessage(inMessage);
                 }
-
-                System.out.println("Gelen mesaj: " + inMessage);
-
-                final String str = inMessage + "\n";
-                Platform.runLater(() -> {
-                    if (chatController != null) {
-                        chatController.appendMessage(str);
-                    }
-                });
             }
 
         } catch (IOException e) {

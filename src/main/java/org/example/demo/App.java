@@ -22,7 +22,6 @@ public class App extends Application implements Initializable {
     private static double y = 0;
 
     private static ChatController chatController;
-    private static LoginController loginController;
     private static Client client;
 
     public static Client getClient() {
@@ -35,7 +34,6 @@ public class App extends Application implements Initializable {
 
     @Override
     public void start(Stage stage) throws IOException {
-        uploadFXML("login");
         App.stage = stage;
         App.scene = new Scene(loadFXML("chat"));
         stage.setScene(scene);
@@ -44,19 +42,8 @@ public class App extends Application implements Initializable {
         stage.show();
 
         client = new Client(chatController);
-        new Thread(App.getClient()).start();
+//        new Thread(App.getClient()).start();
     }
-    private  void uploadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml+".fxml"));
-        loginController = fxmlLoader.getController();
-    }
-    public static void setRoot(String fxml) throws IOException {
-        App.scene.setRoot(loadFXML(fxml));
-        App.scene.getWindow().sizeToScene();
-        App.scene.getWindow().centerOnScreen();
-        setRootAsDraggable();
-    }
-
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml+".fxml"));
         chatController = fxmlLoader.getController();
