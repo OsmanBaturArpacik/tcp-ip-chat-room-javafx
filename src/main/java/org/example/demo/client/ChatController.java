@@ -103,6 +103,8 @@ public class ChatController implements Initializable {
         }
         else if (messageText.startsWith("/quit")) {
             App.getClient().sendMessage("/quit");
+            loginPane.setVisible(true);
+            chatHistory.clear();
         }
         else {
             App.getClient().sendMessage(messageText);
